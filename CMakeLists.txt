@@ -13,6 +13,7 @@ find_package(R REQUIRED)
 option(BENCHMARK_COUNT  "Enable count() benchmarking." ON)
 option(BENCHMARK_LOCATE "Enable locate() benchmarking." OFF)
 option(BENCHMARK_EXTRACT  "Enable extract() benchmarking." OFF)
+option(VISUALIZE_OUTPUT "Visualize the output." OFF)
 
 # read the main config and set some default options
 include(ReadGlobalBenchConfig)
@@ -44,7 +45,9 @@ include(ReadTestCasesConfig)
 include(ReadIndexConfig)
 
 # compile results
-include(ProcessResults)
+if(VISUALIZE_OUTPUT)
+    include(ProcessResults)
+endif()
 
 
 
