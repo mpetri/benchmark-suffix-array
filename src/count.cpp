@@ -58,6 +58,7 @@ int main(int argc, char const *argv[])
 		<< input_type << ";"
 		<< input_size_bytes << ";"
 		<< sdsl::size_in_bytes(csa) << ";"
+		<< csa.sigma << ";"
 		<< checksum << ";"
 		<< pattern_cnt << ";"
 		<< pattern_len << ";"
