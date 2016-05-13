@@ -62,7 +62,12 @@ execute_process(
 )
 
 execute_process(
-  COMMAND ${GIT_EXECUTABLE} remote get-url origin
+  COMMAND ${GIT_EXECUTABLE} remote -v
+  COMMAND grep origin 
+  COMMAND grep fetch
+  COMMAND tr -s " "
+  COMMAND tr " " "\t"
+  COMMAND cut  -f2
   WORKING_DIRECTORY  "${CMAKE_CURRENT_SOURCE_DIR}/external/sdsl-lite"
   OUTPUT_VARIABLE GIT_CUR_REPO_URL
   OUTPUT_STRIP_TRAILING_WHITESPACE
@@ -78,6 +83,7 @@ execute_process(
 
 #  make sure we have the right sdsl branch downloaded
 if((NOT "${GIT_BRANCH}" STREQUAL "${SDSL_REPO_BRANCH}" ) OR (NOT "${SDSL_REPO_URL}" STREQUAL "${GIT_CUR_REPO_URL}" ) )
+    message(STATUS "${SDSL_REPO_URL} ${GIT_CUR_REPO_URL}")
 	message(STATUS "${Yellow}sdsl-lite branch or repo URL inconsistant.${ColourReset}")
 	file(REMOVE_RECURSE "${CMAKE_CURRENT_SOURCE_DIR}/external/sdsl-lite")
 	execute_process(
@@ -100,7 +106,12 @@ if((NOT "${GIT_BRANCH}" STREQUAL "${SDSL_REPO_BRANCH}" ) OR (NOT "${SDSL_REPO_UR
 	)
 
 	execute_process(
-	  COMMAND ${GIT_EXECUTABLE} remote get-url origin
+      COMMAND ${GIT_EXECUTABLE} remote -v
+      COMMAND grep origin 
+      COMMAND grep fetch
+      COMMAND tr -s " "
+      COMMAND tr " " "\t"
+      COMMAND cut  -f2
 	  WORKING_DIRECTORY  "${CMAKE_CURRENT_SOURCE_DIR}/external/sdsl-lite"
 	  OUTPUT_VARIABLE GIT_CUR_REPO_URL
 	  OUTPUT_STRIP_TRAILING_WHITESPACE
