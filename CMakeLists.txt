@@ -27,6 +27,7 @@ add_subdirectory(external/sdsl-lite)
 
 # fix up include directories and sdsl lib path
 include_directories("${CMAKE_BINARY_DIR}/external/sdsl-lite/include"
+                    "${CMAKE_BINARY_DIR}/external/sdsl-lite/external/libdivsufsort/include/"
 					"./include/"
 					)
 link_directories("${CMAKE_BINARY_DIR}/external/sdsl-lite"
