@@ -7,7 +7,7 @@ include(HelperFunctions)
 # make sure we have the required packages
 find_package(LATEX COMPONENTS PDFLATEX REQUIRED)
 find_package(Git REQUIRED)
-find_package(R REQUIRED)
+#find_package(R REQUIRED)
 
 # command line options
 option(BENCHMARK_COUNT  "Enable count() benchmarking." ON)
@@ -48,6 +48,11 @@ include(ReadIndexConfig)
 if(VISUALIZE_OUTPUT)
     include(ProcessResults)
 endif()
+
+
+add_executable(pat2pizzachili.x src/pat2pizzachili.cpp)
+target_link_libraries(pat2pizzachili.x sdsl)
+target_compile_definitions(pat2pizzachili.x PRIVATE IDX_NAME="DUMMY")
 
 
 
