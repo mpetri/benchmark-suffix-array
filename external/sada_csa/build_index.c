@@ -10,16 +10,16 @@
 /* macro to detect and notify errors  */
 #define IFERROR(error) {{if (error) { fprintf(stderr, "%s\n", error_index(error)); exit(1); }}}
 
-int read_file(char *filename, uchar **textt, ulong *length);
+int read_file(char *filename, UCHAR **textt, ULONG *length);
 void print_usage(char *);
 double getTime(void);
 
 int main(int argc, char *argv[]) {
 
 	char *infile, *outfile;
-    uchar *text;
+    UCHAR *text;
 	char *params = NULL;
-	ulong text_len;
+	ULONG text_len;
 	void *index;
 	int error, i;
 	double start, end;
@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
 
 	fprintf(stderr, "Building time: %.3f secs\n", end-start );
 	
-	ulong index_len;
+	ULONG index_len;
 	index_size(index, &index_len);
 	fprintf(stdout,"Input: %lu bytes --> Output %lu bytes.\n", text_len, index_len);
 	fprintf(stdout,"Overall compression --> %.2f%% (%.2f bits per char).\n\n",
@@ -74,9 +74,9 @@ int main(int argc, char *argv[]) {
 /* 
   Opens and reads a text file 
 */
-int read_file(char *filename, uchar **textt, ulong *length) {
+int read_file(char *filename, UCHAR **textt, ULONG *length) {
 
-  uchar *text;
+  UCHAR *text;
   unsigned long t; 
   FILE *infile;
   
@@ -88,7 +88,7 @@ int read_file(char *filename, uchar **textt, ulong *length) {
   *length = ftell(infile);
   
   /* alloc memory for text (the overshoot is for suffix sorting) */
-  text = (uchar *) malloc((*length)*sizeof(*text)); 
+  text = (UCHAR *) malloc((*length)*sizeof(*text)); 
   if(text == NULL) return 1;  
   
   /* read text in one sweep */

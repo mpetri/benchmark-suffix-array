@@ -50,11 +50,11 @@
 #include <stdbool.h>
 #include <string.h>
 
-#ifndef uchar
-#define uchar unsigned char
+#ifndef UCHAR
+#define UCHAR unsigned char
 #endif
-#ifndef ulong
-#define ulong unsigned long
+#ifndef ULONG
+#define ULONG unsigned long
 #endif
 #ifndef min
 #define min(x,y) ((x)<(y)?(x):(y))
@@ -150,7 +150,7 @@ int load_index(char *filename, void **index){
    return 0;
 }
 
-int build_index(uchar *text, ulong length, char *build_options, void **index){
+int build_index(UCHAR *text, ULONG length, char *build_options, void **index){
   char delimiters[] = " =;";
   char filename[256];
   int j,num_parameters;
@@ -231,7 +231,7 @@ int free_index(void *index){
   free(SA);
   return 0;
 }
-int index_size(void *index, ulong *size) {
+int index_size(void *index, ULONG *size) {
   CSA *SA=(CSA *) index;
   *size=0;
   #ifdef USE_MMAP
@@ -243,7 +243,7 @@ int index_size(void *index, ulong *size) {
   return 0;
 }
 
-int index_size_count(void *index, ulong *size) {
+int index_size_count(void *index, ULONG *size) {
   CSA *SA=(CSA *) index;
   *size=0;
   #ifdef USE_MMAP
@@ -254,7 +254,7 @@ int index_size_count(void *index, ulong *size) {
   *size+=sizeof(CSA);
   return 0;
 }
-int index_size_locate(void *index, ulong *size) {
+int index_size_locate(void *index, ULONG *size) {
   CSA *SA=(CSA *) index;
   *size=0;
   #ifdef USE_MMAP
@@ -269,7 +269,7 @@ int index_size_locate(void *index, ulong *size) {
 /*////////////////////
 //Querying the Index//
 ////////////////////*/
-int count(void *index, uchar *pattern, ulong length, ulong *numocc){
+int count(void *index, UCHAR *pattern, ULONG length, ULONG *numocc){
   int l,r,len;
   CSA *SA=(CSA *) index;
   len = csa_bsearch(pattern,length,SA,&l,&r);
@@ -277,21 +277,21 @@ int count(void *index, uchar *pattern, ulong length, ulong *numocc){
   return 0;
 }
 
-ulong locate_extract(void *index){
+ULONG locate_extract(void *index){
 CSA *SA=(CSA *) index;
-ulong largo,*occ,lar,n=SA->n,l,r,lll=0;
+ULONG largo,*occ,lar,n=SA->n,l,r,lll=0;
 long te; 
-ulong matches,locate;
-ulong random,hh;
+ULONG matches,locate;
+ULONG random,hh;
 for ( hh=1; hh <= 1000000; hh*=10)
  for (lar=1;lar<=9;lar++) {
    largo=lar*hh;
    startclock3();
    occ=NULL;
-   random = (ulong) (((float) rand()/ (float) RAND_MAX)*(n-1));
+   random = (ULONG) (((float) rand()/ (float) RAND_MAX)*(n-1));
    matches = largo+1;
    locate=0;
-   occ = (ulong *) malloc(matches*sizeof(ulong));
+   occ = (ULONG *) malloc(matches*sizeof(ULONG));
    l=random;
    r=min(random+largo,n-3);
    occ = csa_batchlookup2(SA,l,r);
@@ -302,7 +302,7 @@ for ( hh=1; hh <= 1000000; hh*=10)
  return lll;
 }
 
-int locate(void *index, uchar *pattern, ulong length, ulong **occ, ulong *numocc){
+int locate(void *index, UCHAR *pattern, ULONG length, ULONG **occ, ULONG *numocc){
   //*numocc=locate_extract(index);
   //exit(0);
   int l,r,len;
@@ -316,18 +316,18 @@ int locate(void *index, uchar *pattern, ulong length, ulong **occ, ulong *numocc
 /*///////////////////////
 //Accessing the indexed//
 ///////////////////////*/
-int display(void *index, uchar *pattern, ulong length, ulong numc, ulong *numocc, uchar **snippet_text, ulong **snippet_lengths) {
+int display(void *index, UCHAR *pattern, ULONG length, ULONG numc, ULONG *numocc, UCHAR **snippet_text, ULONG **snippet_lengths) {
   int l,r;
   int pos;
-  ulong *occ, i, j, from, to, len, x;
-  uchar *text_aux;
+  ULONG *occ, i, j, from, to, len, x;
+  UCHAR *text_aux;
   CSA *SA=(CSA *) index;
   csa_bsearch(pattern,length,SA,&l,&r);
   *numocc = r-l+1;
   occ = csa_batchlookup2(SA,l,r);
-  *snippet_lengths = (ulong *) malloc((*numocc)*sizeof(ulong));
+  *snippet_lengths = (ULONG *) malloc((*numocc)*sizeof(ULONG));
   if (!(*snippet_lengths)) return 1;
-  *snippet_text = (uchar *) malloc((*numocc)*(length+2*numc)*sizeof(uchar));
+  *snippet_text = (UCHAR *) malloc((*numocc)*(length+2*numc)*sizeof(UCHAR));
   if (!(*snippet_text)) return 1;
   text_aux=*snippet_text;
 
@@ -349,18 +349,18 @@ int display(void *index, uchar *pattern, ulong length, ulong numc, ulong *numocc
   return 0;
 }
 
-int extract(void *index, ulong from, ulong to, uchar **snippet, ulong *snippet_length){
+int extract(void *index, ULONG from, ULONG to, UCHAR **snippet, ULONG *snippet_length){
    CSA *SA=(CSA *) index;
-   ulong n = SA->n;
+   ULONG n = SA->n;
    int pos;
    if (to >= n) to=n-1;
    if (from > to) {
      *snippet = NULL;
      *snippet_length=0;
    } else {
-     ulong j;
-     ulong len =to-from+1;
-     *snippet = (uchar *) malloc((len)*sizeof(uchar));
+     ULONG j;
+     ULONG len =to-from+1;
+     *snippet = (UCHAR *) malloc((len)*sizeof(UCHAR));
      if (!(*snippet)) return 1;
      pos = csa_inverse(SA,from+1);
      for (j=0; j<len;j++) {
@@ -372,7 +372,7 @@ int extract(void *index, ulong from, ulong to, uchar **snippet, ulong *snippet_l
    return 0;
 }
 
-int get_length(void *index, ulong *length){
+int get_length(void *index, ULONG *length){
    (*length)=((CSA *) index)->n;
    return 0;
 }

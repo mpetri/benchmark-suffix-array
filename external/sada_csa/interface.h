@@ -1,14 +1,14 @@
-
+#pragma once
 /* General interface for using the compressed index libraries */
 
-#ifndef uchar
-#define uchar unsigned char
+#ifndef UCHAR
+#define UCHAR unsigned char
 #endif
-#ifndef uint
-#define uint  unsigned int
+#ifndef UINT
+#define UINT  unsigned int
 #endif
-#ifndef ulong
-#define ulong unsigned long
+#ifndef ULONG
+#define ULONG unsigned long
 #endif
 
 /* Error management */
@@ -27,7 +27,7 @@ char *error_index (int e);
           always work with some default parameters if build_options is NULL. 
           The returned index is ready to be queried. */
 
-int build_index (uchar *text, ulong length, char *build_options, void **index);
+int build_index (UCHAR *text, ULONG length, char *build_options, void **index);
 
         /*  Saves index on disk by using single or multiple files, having 
           proper extensions. */
@@ -45,26 +45,26 @@ int free_index (void *index);
 
         /* Gives the memory occupied by index in bytes. */
 
-int index_size(void *index, ulong *size);
+int index_size(void *index, ULONG *size);
 
 /* Querying the index */
 
         /* Writes in numocc the number of occurrences of the substring 
           pattern[0..length-1] found in the text indexed by index. */
 
-int count (void *index, uchar *pattern, ulong length, ulong *numocc);
+int count (void *index, UCHAR *pattern, ULONG length, ULONG *numocc);
 
         /* Writes in numocc the number of occurrences of the substring 
           pattern[0..length-1] in the text indexed by index. It also allocates
           occ (which must be freed by the caller) and writes the locations of 
           the numocc occurrences in occ, in arbitrary order.  */
 
-int locate (void *index, uchar *pattern, ulong length, ulong **occ, 
-        ulong *numocc);
+int locate (void *index, UCHAR *pattern, ULONG length, ULONG **occ, 
+        ULONG *numocc);
 
         /* Gives the length of the text indexed */
 
-int get_length(void *index, ulong *length);
+int get_length(void *index, ULONG *length);
 
 /* Accessing the indexed text  */
 
@@ -73,8 +73,8 @@ int get_length(void *index, ulong *length);
           length of the text snippet actually extracted (that could be less 
           than to-from+1 if to is larger than the text size). */
 
-int extract (void *index, ulong from, ulong to, uchar **snippet, 
-        ulong *snippet_length);
+int extract (void *index, ULONG from, ULONG to, UCHAR **snippet, 
+        ULONG *snippet_length);
 
         /* Displays the text (snippet) surrounding any occurrence of the 
           substring pattern[0..length-1] within the text indexed by index. 
@@ -87,10 +87,10 @@ int extract (void *index, ulong from, ulong to, uchar **snippet,
           snippet starting at every multiple of length+2*numc. The second 
           gives the real length of each of the numocc snippets. */
 
-int display (void *index, uchar *pattern, ulong length, ulong numc, 
-        ulong *numocc, uchar **snippet_text, ulong **snippet_lengths);
+int display (void *index, UCHAR *pattern, ULONG length, ULONG numc, 
+        ULONG *numocc, UCHAR **snippet_text, ULONG **snippet_lengths);
 
         /*  Obtains the length of the text indexed by index. */
 
-int length (void *index, ulong *length);
+int length (void *index, ULONG *length);
 

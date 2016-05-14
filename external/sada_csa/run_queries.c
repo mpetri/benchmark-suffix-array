@@ -2,8 +2,8 @@
  * Run Queries
  */
 
-#include "comparray4.h"
 #include "interface.h"
+#include "comparray4.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -31,15 +31,15 @@ using watch = std::chrono::high_resolution_clock;
 void do_locate (void);
 void do_count ();
 void do_extract (void);
-void do_display(ulong length);
-std::string pfile_info (ulong *length, ulong *numpatt);
-void output_char(uchar c, FILE * where);
+void do_display(ULONG length);
+std::string pfile_info (ULONG *length, ULONG *numpatt);
+void output_char(UCHAR c, FILE * where);
 double getTime (void);
 void usage(char * progname);
   		
 static void *Index;	 /* opauque data type */
 static int Verbose = 0; 
-static ulong Index_size, Text_length;
+static ULONG Index_size, Text_length;
 static double Load_time;
 
 /*
@@ -109,7 +109,7 @@ int main (int argc, char *argv[])
 						fprintf(stdout,"%c", DISPLAY);
 
 				}
-			do_display((ulong) atol(argv[3]));
+			do_display((ULONG) atol(argv[3]));
 			break;
 		default:
 			fprintf (stderr, "Unknow option: main ru\n");
@@ -127,14 +127,14 @@ void
 do_count ()
 {
 	int error = 0;
-	ulong numocc, length, tot_numocc = 0, numpatt, res_patt;
+	ULONG numocc, length, tot_numocc = 0, numpatt, res_patt;
 	double time, tot_time = 0;
-	uchar *pattern;
+	UCHAR *pattern;
 
     std::string filename = pfile_info (&length, &numpatt);
 	res_patt = numpatt;
 
-	pattern = (uchar *) malloc (sizeof (uchar) * (length)*numpatt);
+	pattern = (UCHAR *) malloc (sizeof (UCHAR) * (length)*numpatt);
 	if (pattern == NULL)
 	{
 		fprintf (stderr, "Error: cannot allocate\n");
@@ -148,7 +148,7 @@ do_count ()
     }
 //	time = getTime ();
 	auto start = watch::now();
-    ulong pat_start=0;
+    ULONG pat_start=0;
 	while (res_patt)
 	{
 
@@ -171,17 +171,17 @@ do_count ()
 
     std::string test_file(filename); // filename should end with .sdsl
     test_file.resize(test_file.size()-5);
-    fprintf (stdout, "%s;SADA;%lu;1;%lu;%lu;%lu;%lu;%lu;%lu;%lu;%lu\n",
+    fprintf (stdout, "%s;SADA;%lu;1;%lu;%lu;%d;%lu;%lu;%lu;%lu;%lu\n",
              test_file.c_str(), // test_file
-             (static_cast<CSA*>(Index))->l, // psi_sampling
-             Text_length, // n
-             Index_size, // index size in bytes
-             SIGMA, // sigma
-             tot_numocc,//total_occs
-             numpatt,
-             length,
-             numpatt*length,
-             (end-start).count()
+             (unsigned long)(static_cast<CSA*>(Index))->l, // psi_sampling
+             (unsigned long)Text_length, // n
+             (unsigned long)Index_size, // index size in bytes
+             (int)SIGMA, // sigma
+             (unsigned long)tot_numocc,//total_occs
+             (unsigned long)numpatt,
+             (unsigned long)length,
+             (unsigned long)numpatt*length,
+             (unsigned long long)((end-start).count())
              );
 
 //	fprintf (stderr, "Total Num occs found = %lu\n", tot_numocc);
@@ -203,13 +203,13 @@ void
 do_locate ()
 {
 	int error = 0;
-	ulong numocc, length, *occ, tot_numocc = 0, numpatt;
+	ULONG numocc, length, *occ, tot_numocc = 0, numpatt;
 	double time, tot_time = 0;
-	uchar *pattern;
+	UCHAR *pattern;
 
 	pfile_info (&length, &numpatt);
 
-	pattern = (uchar *) malloc (sizeof (uchar) * (length));
+	pattern = (UCHAR *) malloc (sizeof (UCHAR) * (length));
 	if (pattern == NULL)
 	{
 		fprintf (stderr, "Error: cannot allocate\n");
@@ -253,16 +253,16 @@ do_locate ()
 }
 
 
-void do_display(ulong numc) {
+void do_display(ULONG numc) {
 	
 	int error = 0;
-	ulong numocc, length, i, *snippet_len, tot_numcharext = 0, numpatt;
+	ULONG numocc, length, i, *snippet_len, tot_numcharext = 0, numpatt;
 	double time, tot_time = 0;
-	uchar *pattern, *snippet_text;
+	UCHAR *pattern, *snippet_text;
 
 	pfile_info (&length, &numpatt);
 
-	pattern = (uchar *) malloc (sizeof (uchar) * (length));
+	pattern = (UCHAR *) malloc (sizeof (UCHAR) * (length));
 	if (pattern == NULL)
 	{
 		fprintf (stderr, "Error: cannot allocate\n");
@@ -289,7 +289,7 @@ void do_display(ulong numc) {
 		tot_time += (getTime () - time);
 		
 		if (Verbose) {
-			ulong j, len = length + 2*numc;
+			ULONG j, len = length + 2*numc;
 		    char blank = '\0';
 			fwrite(&length, sizeof(length), 1, stdout);
 			fwrite(pattern, sizeof(*pattern), length, stdout);
@@ -297,9 +297,9 @@ void do_display(ulong numc) {
 			fwrite(&len, sizeof(len), 1, stdout);
 		
 			for (i = 0; i < numocc; i++){
-				fwrite(snippet_text+len*i,sizeof(uchar),snippet_len[i],stdout);
+				fwrite(snippet_text+len*i,sizeof(UCHAR),snippet_len[i],stdout);
 				for(j=snippet_len[i];j<len;j++)
-				   fwrite(&blank,sizeof(uchar),1,stdout);
+				   fwrite(&blank,sizeof(UCHAR),1,stdout);
 			}
 
 		}
@@ -326,11 +326,11 @@ void do_display(ulong numc) {
 
 /* Open patterns file and read header */
 std::string
-pfile_info (ulong * length, ulong * numpatt)
+pfile_info (ULONG * length, ULONG * numpatt)
 {
 	int error;
-	uchar c;
-	uchar origfilename[257];
+	UCHAR c;
+	UCHAR origfilename[257];
 
 	error = fscanf (stdin, "# number=%lu length=%lu file=%s forbidden=", numpatt,
 					length, origfilename);
@@ -357,8 +357,8 @@ void
 do_extract()
 {
 	int error = 0;
-	uchar *text, orig_file[257];
-	ulong num_pos, from, to, numchars, readen, tot_ext = 0;
+	UCHAR *text, orig_file[257];
+	ULONG num_pos, from, to, numchars, readen, tot_ext = 0;
 	double time, tot_time = 0;
 
 	error = fscanf(stdin, "# number=%lu length=%lu file=%s\n", &num_pos, &numchars, orig_file);
@@ -385,9 +385,9 @@ do_extract()
 		tot_ext += readen;
 		
 		if (Verbose) {
-			fwrite(&from,sizeof(ulong),1,stdout);
-			fwrite(&readen,sizeof(ulong),1,stdout);
-			fwrite(text,sizeof(uchar),readen, stdout);
+			fwrite(&from,sizeof(ULONG),1,stdout);
+			fwrite(&readen,sizeof(ULONG),1,stdout);
+			fwrite(text,sizeof(UCHAR),readen, stdout);
 		}
 
 		num_pos--;

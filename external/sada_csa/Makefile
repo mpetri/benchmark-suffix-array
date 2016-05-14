@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-O9 -DNDEBUG 
+CFLAGS=-O9 -DNDEBUG -std=c++11
 
 all: index
 
