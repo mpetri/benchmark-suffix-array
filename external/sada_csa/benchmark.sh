@@ -14,8 +14,10 @@ for file in $files; do
         echo $psi_sample
         filename="$file.$psi_sample"
         echo $filename
-        ./build_index $file dummy "filename=$filename;samplerate=1048576;samplepsi=$psi_sample"
-
+        if [ ! -e $filename.idx ]; then 
+            echo "build index"
+            ./build_index $file dummy "filename=$filename;samplerate=1048576;samplepsi=$psi_sample"
+        fi
         ../../build/pat2pizzachili.x ../../build/patterns/${file}.sdsl > ${file}.pat
         
         ./run_queries $filename C < ${file}.pat >> res.txt
